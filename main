@@ -103,7 +103,7 @@ local function startFly()
 
 		-- 🧠 BUILD POSITION RELATIVE TO START POINT
 		if move.Magnitude > 0 then
-			startPosition += move.Unit * (flySpeed * 0.05)
+			startPosition += move.Unit * (flySpeed * 0.005)
 		end
 
 		alignPos.Position = startPosition
