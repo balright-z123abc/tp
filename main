@@ -1,3 +1,8 @@
+if not game:IsLoaded() then
+    game.Loaded:Wait()
+end
+task.wait(1)
+
 local Players = game:GetService("Players")
 local TweenService = game:GetService("TweenService")
 local RunService = game:GetService("RunService")
@@ -82,6 +87,30 @@ RunService.RenderStepped:Connect(function(dt)
 			end
 		end
 	end
+end)
+
+--------------------------------------------------
+-- ⚡ PROXIMITY PROMPT
+--------------------------------------------------
+--[[
+	WARNING: Heads up! This script has not been verified by ScriptBlox. Use at your own risk!
+]]
+for _, prom in next, workspace:GetDescendants() do
+  if prom:IsA("ProximityPrompt") then
+    prom.PromptButtonHoldBegan:Connect(function()
+       if prom.HoldDuration <= 0 then return end
+      fireproximityprompt(prom, 0)
+    end)
+  end
+end
+
+workspace.DescendantAdded:Connect(function(class)
+  if class:IsA("ProximityPrompt") then
+    class.PromptButtonHoldBegan:Connect(function()
+        if class.HoldDuration <= 0 then return end
+      fireproximityprompt(class, 0)
+    end)
+  end
 end)
 
 --------------------------------------------------
@@ -232,9 +261,6 @@ local function addButton(text, callback, colorFunc)
 		end
 	end)
 
-	--------------------------------------------------
-	-- SMOOTH PRESS DOWN EFFECT
-	--------------------------------------------------
 	local scale = Instance.new("UIScale")
 	scale.Parent = btn
 	scale.Scale = 1
@@ -266,8 +292,6 @@ local function addButton(text, callback, colorFunc)
 		}):Play()
 		pressing = false
 	end)
-
-	--------------------------------------------------
 
 	btn.MouseButton1Click:Connect(callback)
 
@@ -324,6 +348,20 @@ speedBtn = addButton("CFrame Speed: OFF", function()
 	speedBtn.Text = "CFrame Speed: " .. (cframeSpeedEnabled and "ON" or "OFF")
 end, function()
 	return cframeSpeedEnabled and Color3.fromRGB(0,200,0) or Color3.fromRGB(200,0,0)
+end)
+
+-- NEW: Proximity Prompt button
+local proxBtn
+proxBtn = addButton("instant prox prompts: OFF", function()
+	proxEnabled = not proxEnabled
+	proxBtn.Text = "instant prox prompts: " .. (proxEnabled and "ON" or "OFF")
+	if proxEnabled then
+		enableProx()
+	else
+		disableProx()
+	end
+end, function()
+	return proxEnabled and Color3.fromRGB(0,200,0) or Color3.fromRGB(200,0,0)
 end)
 
 --------------------------------------------------
